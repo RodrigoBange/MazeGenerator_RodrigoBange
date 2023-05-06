@@ -90,7 +90,7 @@ public class MazeGenerator : MonoBehaviour, IMazeGenerator
                 }
                 else
                 {
-                    // Prefer inactive cells, or cells with only two open walls.
+                    // Prefer inactive cells, or cells with only two open walls or less.
                     if (!neighbor.IsActive || neighbor.GetOpenWallsCount() <= 2)
                     {
                         priorityList.Add(neighbor);
@@ -135,8 +135,8 @@ public class MazeGenerator : MonoBehaviour, IMazeGenerator
                 }
 
                 currentCell = path.Pop();
-                currentCell.ToggleWall(currentCell.GetSide(badCell), true);
-
+                //currentCell.TogglePath(currentCell.GetSide(badCell), false);
+                //badCell.TogglePath(badCell.GetSide(currentCell), false);
                 continue;
             }
 
@@ -146,8 +146,8 @@ public class MazeGenerator : MonoBehaviour, IMazeGenerator
             // If the next cell is connectable (aka, path has more than one cell), connect the cells.
             if (nextCell.IsConnectable)
             {
-                currentCell.ToggleWall(currentCell.GetSide(nextCell), true);
-                nextCell.ToggleWall(nextCell.GetSide(currentCell), true);
+                currentCell.TogglePath(currentCell.GetSide(nextCell), true);
+                nextCell.TogglePath(nextCell.GetSide(currentCell), true);
             }
 
             unvisitedCells.Remove(nextCell);
@@ -194,9 +194,9 @@ public class MazeGenerator : MonoBehaviour, IMazeGenerator
             }
         }
 
-        // Open the top wall of the first cell, and the bottom wall of the last cell.
-        cells[Random.Range(0, cells.GetLength(0)), 0].ToggleWall(Side.Top, true);
-        cells[Random.Range(0, cells.GetLength(0)), height - 1].ToggleWall(Side.Bottom, true);
+        // Open the top path of the first cell, and the bottom path of the last cell.
+        cells[Random.Range(0, cells.GetLength(0)), 0].TogglePath(Side.Top, true);
+        cells[Random.Range(0, cells.GetLength(0)), height - 1].TogglePath(Side.Bottom, true);
 
         isDone = true;
         Debug.Log("Maze loaded");

@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using UnityEngine;
 
 public class CellController : MonoBehaviour
@@ -51,7 +49,7 @@ public class CellController : MonoBehaviour
         Position = new Vector3(x, 0, z);
     }
 
-    public void ToggleWall(Side side, bool active)
+    public void TogglePath(Side side, bool active)
     {
         walls[(int)side].GetComponent<MeshRenderer>().enabled = active;
         walls[(int)side].layer = active ? 0 : 1;
@@ -66,7 +64,6 @@ public class CellController : MonoBehaviour
             isConnectable = true;
             pathIndex = -1;
         }
-        // TODO: Activate path
     }
 
     public bool HasNeighbor(CellController cell)
@@ -86,7 +83,7 @@ public class CellController : MonoBehaviour
 
     public bool IsSideOpen(Side side)
     {
-        return !walls[(int)side].activeInHierarchy;
+        return walls[(int)side].GetComponent<MeshRenderer>().enabled;
     }
 
     public List<CellController> Neighbors
