@@ -135,8 +135,10 @@ public class MazeGenerator : MonoBehaviour, IMazeGenerator
                 }
 
                 currentCell = path.Pop();
-                //currentCell.TogglePath(currentCell.GetSide(badCell), false);
-                //badCell.TogglePath(badCell.GetSide(currentCell), false);
+                currentCell.TogglePath(currentCell.GetSide(badCell), false);
+                // TODO : TEST FOLLOWING LINE!!!!
+                badCell.TogglePath(badCell.GetSide(currentCell), false);
+
                 continue;
             }
 
@@ -144,11 +146,11 @@ public class MazeGenerator : MonoBehaviour, IMazeGenerator
             CellController nextCell = neighbors[Random.Range(0, neighbors.Count)];
 
             // If the next cell is connectable (aka, path has more than one cell), connect the cells.
-            if (nextCell.IsConnectable)
-            {
-                currentCell.TogglePath(currentCell.GetSide(nextCell), true);
-                nextCell.TogglePath(nextCell.GetSide(currentCell), true);
-            }
+            //if (nextCell.IsConnectable)
+            //{
+            currentCell.TogglePath(currentCell.GetSide(nextCell), true);
+            nextCell.TogglePath(nextCell.GetSide(currentCell), true);
+            //}
 
             unvisitedCells.Remove(nextCell);
 
