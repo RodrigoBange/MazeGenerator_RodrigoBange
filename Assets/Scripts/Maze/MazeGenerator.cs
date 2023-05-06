@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 public class MazeGenerator : MonoBehaviour, IMazeGenerator
@@ -16,27 +15,27 @@ public class MazeGenerator : MonoBehaviour, IMazeGenerator
         cells = new CellController[width, height];
         List<CellController> unvisitedCells = new();
 
-        for (int y = 0; y < height; y++)
+        for (int z = 0; z < height; z++)
         {
             for (int x = 0; x < width; x++)
             {
                 GameObject cellObject = Instantiate(cellPrefab, parent);
-                cells[x, y] = cellObject.GetComponent<CellController>();
-                cells[x, y].SetPosition(x, y);
-                cells[x, y].SetCellActive(false);
+                cells[x, z] = cellObject.GetComponent<CellController>();
+                cells[x, z].SetPosition(x, z);
+                cells[x, z].SetCellActive(false);
 
-                unvisitedCells.Add(cells[x, y]);
+                unvisitedCells.Add(cells[x, z]);
 
                 // Add yourself to neighbor to left and above.
                 if (x > 0)
                 {
-                    cells[x - 1, y].AddNeighbor(cells[x, y]);
-                    cells[x, y].AddNeighbor(cells[x - 1, y]);
+                    cells[x - 1, z].AddNeighbor(cells[x, z]);
+                    cells[x, z].AddNeighbor(cells[x - 1, z]);
                 }
-                if (y > 0)
+                if (z > 0)
                 {
-                    cells[x, y - 1].AddNeighbor(cells[x, y]);
-                    cells[x, y].AddNeighbor(cells[x, y - 1]);
+                    cells[x, z - 1].AddNeighbor(cells[x, z]);
+                    cells[x, z].AddNeighbor(cells[x, z - 1]);
                 }
             }
             // Display a row at a time.
@@ -71,6 +70,7 @@ public class MazeGenerator : MonoBehaviour, IMazeGenerator
             {
                 speed += baseSpeed;
                 yield return new WaitForSeconds(0.004f);
+                //yield return new WaitForSeconds(1f);
             }
 
             // Fixes a problem of path incorrectly being left as correct, if it had more than one possible neighbor,
@@ -144,12 +144,11 @@ public class MazeGenerator : MonoBehaviour, IMazeGenerator
             CellController nextCell = neighbors[Random.Range(0, neighbors.Count)];
 
             // If the next cell is connectable (aka, path has more than one cell), connect the cells.
-            //if (nextCell.IsConnectable)
-            //{
-            // TODO: Test this part
-                currentCell.ToggleWall(currentCell.GetSide(nextCell), false);
-                nextCell.ToggleWall(nextCell.GetSide(currentCell), false);
-            //}
+            if (nextCell.IsConnectable)
+            {
+                currentCell.ToggleWall(currentCell.GetSide(nextCell), true);
+                nextCell.ToggleWall(nextCell.GetSide(currentCell), true);
+            }
 
             unvisitedCells.Remove(nextCell);
 
@@ -196,8 +195,8 @@ public class MazeGenerator : MonoBehaviour, IMazeGenerator
         }
 
         // Open the top wall of the first cell, and the bottom wall of the last cell.
-        cells[Random.Range(0, cells.GetLength(0)), 0].ToggleWall(Side.Top, false);
-        cells[Random.Range(0, cells.GetLength(0)), height - 1].ToggleWall(Side.Bottom, false);
+        cells[Random.Range(0, cells.GetLength(0)), 0].ToggleWall(Side.Top, true);
+        cells[Random.Range(0, cells.GetLength(0)), height - 1].ToggleWall(Side.Bottom, true);
 
         isDone = true;
         Debug.Log("Maze loaded");

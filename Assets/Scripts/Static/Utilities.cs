@@ -11,20 +11,20 @@ public static class Utilities
         return (Side)(((int)side + 2) % 4);
     }
 
-    public static Vector2 TranslateToVector(this Side side)
+    public static Vector3 TranslateToVector(this Side side)
     {
         switch (side)
         {
             case Side.Top:
-                return Vector2.up;
+                return Vector3.forward;
             case Side.Right:
-                return Vector2.right;
+                return Vector3.right;
             case Side.Bottom:
-                return Vector2.down;
+                return Vector3.back;
             case Side.Left:
-                return Vector2.left;
+                return Vector3.left;
             default:
-                return Vector2.zero;
+                return Vector3.zero;
         }
     }
 
@@ -35,7 +35,7 @@ public static class Utilities
     {
         if (neighbour.Position.x == cell.Position.x)
         {
-            if (neighbour.Position.y < cell.Position.y)
+            if (neighbour.Position.z < cell.Position.z)
             {
                 return Side.Top;
             }

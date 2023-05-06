@@ -38,7 +38,7 @@ public class MapController : MonoBehaviour
     {
         mazeGenerator = gameObject.AddComponent<MazeGenerator>();
 
-        GenerateMaze(150, 75);
+        GenerateMaze(5, 5);
     }
 
     public void GenerateMaze(int width, int height)

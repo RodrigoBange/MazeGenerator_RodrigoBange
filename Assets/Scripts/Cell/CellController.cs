@@ -6,16 +6,12 @@ using UnityEngine;
 public class CellController : MonoBehaviour
 {
     [SerializeField]
-    private SpriteRenderer[] wallRenderers;
-
-
-    [SerializeField]
-    private GameObject corners;
+    private GameObject[] walls;
 
     [SerializeField]
     private List<CellController> neighbors = new();
 
-    private Vector2 position = Vector2.zero;
+    private Vector3 position = Vector3.zero;
 
     [SerializeField]
     private int pathIndex = -1;
@@ -35,7 +31,7 @@ public class CellController : MonoBehaviour
         }
     }
 
-    public Vector2 Position
+    public Vector3 Position
     {
         get
         {
@@ -45,48 +41,32 @@ public class CellController : MonoBehaviour
         {
             position = value;
             var pos = value;
-            pos.y *= -1;
+            pos.z *= -1;
             transform.localPosition = pos;
         }
     }
 
-    public void SetPosition(int x, int y)
+    public void SetPosition(int x, int z)
     {
-        Position = new Vector2(x, y);
+        Position = new Vector3(x, 0, z);
     }
 
     public void ToggleWall(Side side, bool active)
     {
-        wallRenderers[(int)side].sortingOrder = active ? 100 : -100;
-        wallRenderers[(int)side].gameObject.SetActive(active);
+        walls[(int)side].GetComponent<MeshRenderer>().enabled = active;
+        walls[(int)side].layer = active ? 0 : 1;
     }
 
     public void SetCellActive(bool active)
     {
         isActive = active;
-        corners.SetActive(active);
 
         if (!active)
         {
             isConnectable = true;
             pathIndex = -1;
-            ToggleWall(Side.Top, true);
-            ToggleWall(Side.Right, true);
-            ToggleWall(Side.Bottom, true);
-            ToggleWall(Side.Left, true);
-
-            foreach (var renderer in wallRenderers)
-            {
-                renderer.gameObject.SetActive(false);
-            }
         }
-        else
-        {
-            foreach (var renderer in wallRenderers)
-            {
-                renderer.gameObject.SetActive(true);
-            }
-        }
+        // TODO: Activate path
     }
 
     public bool HasNeighbor(CellController cell)
@@ -106,7 +86,7 @@ public class CellController : MonoBehaviour
 
     public bool IsSideOpen(Side side)
     {
-        return wallRenderers[(int)side].sortingOrder == -100;
+        return !walls[(int)side].activeInHierarchy;
     }
 
     public List<CellController> Neighbors
