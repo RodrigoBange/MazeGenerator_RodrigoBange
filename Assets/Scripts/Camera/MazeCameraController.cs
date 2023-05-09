@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MapCameraController : MonoBehaviour
+public class MazeCameraController : MonoBehaviour
 {
     /// <summary>
     /// Sets the camera position depending on the size of the maze.

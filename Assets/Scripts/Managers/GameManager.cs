@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
         // Set position of camera
         if (!value)
         {
-            mazeCamera.GetComponent<MapCameraController>().SetCameraPosition();
+            mazeCamera.GetComponent<MazeCameraController>().SetCameraPosition();
         }
     }
 
