@@ -16,6 +16,10 @@ public class CellPooler : MonoBehaviour
         pool = new ObjectPool<CellController>(CreateCell, OnTakeCellFromPool, OnReturnCellToPool);
     }
 
+    /// <summary>
+    /// Creates a new CellController object.
+    /// </summary>
+    /// <returns>Returns a CellController object.</returns>
     private CellController CreateCell()
     {
         var cell = Instantiate(cellPrefab);
@@ -23,11 +27,19 @@ public class CellPooler : MonoBehaviour
         return cell;
     }
 
+    /// <summary>
+    /// Activates a CellController object in the pool.
+    /// </summary>
+    /// <param name="cell">The cell to activate.</param>
     private void OnTakeCellFromPool(CellController cell)
     {
         cell.gameObject.SetActive(true);
     }
 
+    /// <summary>
+    /// Disabled a CellController object in the pool.
+    /// </summary>
+    /// <param name="cell">The cell to deactivate.</param>
     private void OnReturnCellToPool(CellController cell)
     {
         cell.gameObject.SetActive(false);

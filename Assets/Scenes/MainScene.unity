@@ -458,7 +458,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerCamera: {fileID: 963194225}
-  mapCamera: {fileID: 515962827}
+  mazeCamera: {fileID: 515962827}
   player: {fileID: 178062855}
 --- !u!1 &395020914
 GameObject:
@@ -590,7 +590,7 @@ GameObject:
   - component: {fileID: 515962828}
   - component: {fileID: 515962832}
   m_Layer: 0
-  m_Name: Map Camera
+  m_Name: Maze Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -720,7 +720,7 @@ GameObject:
   - component: {fileID: 532953751}
   - component: {fileID: 532953752}
   m_Layer: 0
-  m_Name: Map
+  m_Name: Maze
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -756,7 +756,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mazeGenerator: {fileID: 532953752}
-  gameManager: {fileID: 239849563}
 --- !u!114 &532953751
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -785,7 +784,6 @@ MonoBehaviour:
   startPlatform: {fileID: 224624555}
   finishPlatform: {fileID: 747102506}
   cellPooler: {fileID: 532953751}
-  gameManager: {fileID: 239849563}
 --- !u!1 &551682138
 GameObject:
   m_ObjectHideFlags: 0

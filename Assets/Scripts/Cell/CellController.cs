@@ -45,11 +45,21 @@ public class CellController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Sets the position of the cell in the maze.
+    /// </summary>
+    /// <param name="x">X position of cell.</param>
+    /// <param name="z">Z position of cell.</param>
     public void SetPosition(int x, int z)
     {
         Position = new Vector3(x, 0, z);
     }
 
+    /// <summary>
+    /// Opens a path of closes a path from the cell.
+    /// </summary>
+    /// <param name="side">The side of the cell to open/close.</param>
+    /// <param name="active">Boolean to open(true) the path or close(false)</param>
     public void TogglePath(Side side, bool active)
     {
         walls[(int)side].GetComponent<MeshRenderer>().enabled = active;
@@ -57,6 +67,10 @@ public class CellController : MonoBehaviour
         walls[(int)side].GetComponent<BoxCollider>().enabled = active;
     }
 
+    /// <summary>
+    /// Sets the cell variables to active or unactive.
+    /// </summary>
+    /// <param name="active">Boolean to activate the cell values</param>
     public void SetCellActive(bool active)
     {
         isActive = active;
@@ -68,21 +82,39 @@ public class CellController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Checks if the cell has neighbors.
+    /// </summary>
+    /// <param name="cell">The cell to inspect.</param>
+    /// <returns>Boolean if cell has the given neighbor.</returns>
     public bool HasNeighbor(CellController cell)
     {
         return neighbors.Contains(cell);
     }
 
+    /// <summary>
+    /// Adds a neighbor to the given cell.
+    /// </summary>
+    /// <param name="cell">The cell to inspect.</param>
     public void AddNeighbor(CellController cell)
     {
         neighbors.Add(cell);
     }
 
+    /// <summary>
+    /// Removes a neighbor from the given cell.
+    /// </summary>
+    /// <param name="cell">The cell to inspect.</param>
     public void RemoveNeighbor(CellController cell)
     {
         neighbors.Remove(cell);
     }
 
+    /// <summary>
+    /// Checks if a side from the given cell is open or not.
+    /// </summary>
+    /// <param name="side">The side to inspect of the cell.</param>
+    /// <returns>Boolean if the side is open or not.</returns>
     public bool IsSideOpen(Side side)
     {
         return walls[(int)side].GetComponent<MeshRenderer>().enabled;
@@ -102,7 +134,11 @@ public class CellController : MonoBehaviour
     private bool isConnectable = true;
     public bool IsConnectable { get => isConnectable; set => isConnectable = value; }
 
-    public int GetOpenWallsCount()
+    /// <summary>
+    /// Checks the amount of paths that are currently open.
+    /// </summary>
+    /// <returns>Returns the amount of paths that are open.</returns>
+    public int GetOpenPathsCount()
     {
         int count = 0;
         if (IsSideOpen(Side.Top))
@@ -124,6 +160,9 @@ public class CellController : MonoBehaviour
         return count;
     }
 
+    /// <summary>
+    /// Reset all values to default when cell is deactivated.
+    /// </summary>
     private void OnDisable()
     {
         pathIndex = -1;

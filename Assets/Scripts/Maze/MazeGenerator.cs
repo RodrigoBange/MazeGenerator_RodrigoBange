@@ -4,16 +4,22 @@ using UnityEngine;
 
 public class MazeGenerator : MonoBehaviour, IMazeGenerator
 {
-    private bool isDone = true;
-
     private CellController[,] cells;
+
     [SerializeField]
     private GameObject startPlatform, finishPlatform;
+
     [SerializeField]
     private CellPooler cellPooler;
-    [SerializeField]
-    GameManager gameManager;
 
+    private bool isDone = true;
+
+    /// <summary>
+    /// Generates a maze of cells.
+    /// </summary>
+    /// <param name="width">The horizontal size of the maze.</param>
+    /// <param name="height">The vertical size of the maze.</param>
+    /// <param name="parent">The parent of the maze to generate the cells in.</param>
     public IEnumerator CreateMaze(int width, int height, Transform parent)
     {
         isDone = false;
@@ -26,8 +32,6 @@ public class MazeGenerator : MonoBehaviour, IMazeGenerator
             for (int x = 0; x < width; x++)
             {
                 var cell = cellPooler.pool.Get();
-                //GameObject cellObject = Instantiate(cellPrefab, parent);
-                //cells[x, z] = cellObject.GetComponent<CellController>();
                 cells[x, z] = cell;
                 cells[x, z].SetPosition(x, z);
                 cells[x, z].SetCellActive(false);
@@ -70,7 +74,7 @@ public class MazeGenerator : MonoBehaviour, IMazeGenerator
         WaitForSeconds delay;
 
         // Limit amount of steps and set delay, helps prevent freezes.
-        if (chunks > 60)
+        if (chunks > 60) // In case of a big maze, slow down the amount loaded.
         {
             chunks = 60;
             delay = new(0.125f);
@@ -111,7 +115,7 @@ public class MazeGenerator : MonoBehaviour, IMazeGenerator
                 else
                 {
                     // Prefer inactive cells, or cells with only two open walls or less.
-                    if (!neighbor.IsActive || neighbor.GetOpenWallsCount() <= 2)
+                    if (!neighbor.IsActive || neighbor.GetOpenPathsCount() <= 2)
                     {
                         priorityList.Add(neighbor);
                     }
@@ -224,9 +228,11 @@ public class MazeGenerator : MonoBehaviour, IMazeGenerator
         finishPlatform.SetActive(true);
         finishPlatform.transform.position = new Vector3(finish.Position.x, parent.position.y - 0.2f, -finish.Position.z - 1.175f);
 
+        // Maze has been loaded
         isDone = true;
         Debug.Log("Maze loaded");
-        gameManager.SetUpPlayer(startPlatform.transform.position);
+        GameManager.Instance.SetUpPlayer(startPlatform.transform.position);
+        //gameManager.SetUpPlayer(startPlatform.transform.position);
     }
 
     /// <summary>
@@ -239,6 +245,9 @@ public class MazeGenerator : MonoBehaviour, IMazeGenerator
     /// </summary>
     public CellController[,] Cells => cells;
 
+    /// <summary>
+    /// Clears the maze of all cells and stores them back in a pool. Returns if no cell has been generated.
+    /// </summary>
     public void ClearMaze()
     {
         if (cells == null)
