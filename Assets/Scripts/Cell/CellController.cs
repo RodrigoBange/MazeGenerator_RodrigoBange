@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Pool;
 
 public class CellController : MonoBehaviour
 {
@@ -121,5 +122,17 @@ public class CellController : MonoBehaviour
             count++;
         }
         return count;
+    }
+
+    private void OnDisable()
+    {
+        pathIndex = -1;
+        isConnectable = true;
+        position = Vector3.zero;
+        neighbors.Clear();
+        TogglePath(Side.Top, false);
+        TogglePath(Side.Right, false);
+        TogglePath(Side.Bottom, false);
+        TogglePath(Side.Left, false);
     }
 }

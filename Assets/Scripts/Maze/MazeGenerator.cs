@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class MazeGenerator : MonoBehaviour, IMazeGenerator
@@ -8,10 +7,14 @@ public class MazeGenerator : MonoBehaviour, IMazeGenerator
     private bool isDone = true;
 
     private CellController[,] cells;
-    private GameObject startPlatform;
-    private GameObject finishPlatform;
+    [SerializeField]
+    private GameObject startPlatform, finishPlatform;
+    [SerializeField]
+    private CellPooler cellPooler;
+    [SerializeField]
+    GameManager gameManager;
 
-    public IEnumerator CreateMaze(int width, int height, GameObject cellPrefab, Transform parent, GameObject startPrefab, GameObject finishPrefab, GameManager manager)
+    public IEnumerator CreateMaze(int width, int height, Transform parent)
     {
         isDone = false;
 
@@ -22,8 +25,10 @@ public class MazeGenerator : MonoBehaviour, IMazeGenerator
         {
             for (int x = 0; x < width; x++)
             {
-                GameObject cellObject = Instantiate(cellPrefab, parent);
-                cells[x, z] = cellObject.GetComponent<CellController>();
+                var cell = cellPooler.pool.Get();
+                //GameObject cellObject = Instantiate(cellPrefab, parent);
+                //cells[x, z] = cellObject.GetComponent<CellController>();
+                cells[x, z] = cell;
                 cells[x, z].SetPosition(x, z);
                 cells[x, z].SetCellActive(false);
 
@@ -64,7 +69,7 @@ public class MazeGenerator : MonoBehaviour, IMazeGenerator
         float chunks = maxCells / 100;
         WaitForSeconds delay;
 
-        // Limit amount of steps and set delay
+        // Limit amount of steps and set delay, helps prevent freezes.
         if (chunks > 60)
         {
             chunks = 60;
@@ -151,7 +156,6 @@ public class MazeGenerator : MonoBehaviour, IMazeGenerator
 
                 currentCell = path.Pop();
                 currentCell.TogglePath(currentCell.GetSide(badCell), false);
-                // TODO : TEST FOLLOWING LINE!!!!
                 badCell.TogglePath(badCell.GetSide(currentCell), false);
 
                 continue;
@@ -214,17 +218,15 @@ public class MazeGenerator : MonoBehaviour, IMazeGenerator
         start.TogglePath(Side.Top, true);
         finish.TogglePath(Side.Bottom, true);
 
-        // Create spawn and finish
-        startPlatform = Instantiate(startPrefab, parent);
+        // Activate spawn and finish
+        startPlatform.SetActive(true);
         startPlatform.transform.position = new Vector3(start.Position.x, parent.position.y - 0.1f, start.Position.z + 1.175f);
-        finishPlatform = Instantiate(finishPrefab, parent);
+        finishPlatform.SetActive(true);
         finishPlatform.transform.position = new Vector3(finish.Position.x, parent.position.y - 0.2f, -finish.Position.z - 1.175f);
-        //cells[Random.Range(0, cells.GetLength(0)), 0].TogglePath(Side.Top, true);
-        //cells[Random.Range(0, cells.GetLength(0)), height - 1].TogglePath(Side.Bottom, true);
 
         isDone = true;
         Debug.Log("Maze loaded");
-        manager.SetUpPlayer(startPlatform.transform.position);
+        gameManager.SetUpPlayer(startPlatform.transform.position);
     }
 
     /// <summary>
@@ -246,11 +248,11 @@ public class MazeGenerator : MonoBehaviour, IMazeGenerator
 
         foreach (CellController cell in cells)
         {
-            Destroy(cell.gameObject);
+            cellPooler.pool.Release(cell);
         }
 
-        Destroy(startPlatform);
-        Destroy(finishPlatform);
+        startPlatform.SetActive(false);
+        finishPlatform.SetActive(false);
 
         cells = new CellController[0, 0];
     }

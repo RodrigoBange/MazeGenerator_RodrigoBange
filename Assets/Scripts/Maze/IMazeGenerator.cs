@@ -3,7 +3,7 @@ using UnityEngine;
 
 public interface IMazeGenerator
 {
-    IEnumerator CreateMaze(int width, int height, GameObject cellPrefab, Transform parent, GameObject startPrefab, GameObject finishPrefab, GameManager manager);
+    IEnumerator CreateMaze(int width, int height, Transform parent);
     void ClearMaze();
     bool IsDone { get; }
 }

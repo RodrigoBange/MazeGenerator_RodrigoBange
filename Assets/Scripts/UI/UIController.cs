@@ -7,6 +7,6 @@ public class UIController : MonoBehaviour
 {
     public void OnGenerateNewMazeClick()
     {
-        MapController.Instance.GenerateMaze(10, 10);
+        MapController.Instance.GenerateMaze(Random.Range(10, 250), Random.Range(10, 250));
     }
 }
