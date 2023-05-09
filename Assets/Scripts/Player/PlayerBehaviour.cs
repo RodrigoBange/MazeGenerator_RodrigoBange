@@ -52,9 +52,13 @@ public class PlayerBehaviour : MonoBehaviour
         // Movement
         Move();
 
+        // Flies the character up
         FlyUp();
     }
 
+    /// <summary>
+    /// Moves the player in a direction.
+    /// </summary>
     private void Move()
     {
         rb.velocity = new Vector3(movementVector.x * moveSpeed, rb.velocity.y, movementVector.z * moveSpeed);
@@ -71,6 +75,10 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Allows or denies the user the ability to move around.
+    /// </summary>
+    /// <param name="value">Boolean to enable or disable player movement.</param>
     public void AllowMovement(bool value)
     {
         if (!value)
@@ -83,6 +91,9 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Makes the player move up vertically. Called after reaching the finish.
+    /// </summary>
     private void FlyUp()
     {
         if (goalPosition != Vector3.zero && !goalPositionReached)
