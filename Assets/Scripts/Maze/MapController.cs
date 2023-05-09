@@ -7,7 +7,16 @@ public class MapController : MonoBehaviour
     private IMazeGenerator mazeGenerator;
 
     [SerializeField]
+    private GameManager gameManager;
+
+    [SerializeField]
     private GameObject cellPrefab;
+
+    [SerializeField]
+    private GameObject startPrefab;
+
+    [SerializeField]
+    private GameObject finishPrefab;
 
     private IEnumerator coroutine;
 
@@ -38,23 +47,27 @@ public class MapController : MonoBehaviour
     {
         mazeGenerator = gameObject.AddComponent<MazeGenerator>();
 
-        GenerateMaze(150, 75);
+        GenerateMaze(10, 10);
     }
 
     public void GenerateMaze(int width, int height)
     {
+        // Check to avoid createMaze spam
         if (!mazeGenerator.IsDone)
         {
             return;
         }
+
+        // Enable map camera
+        gameManager.ActivatePlayerCamera(false);
 
         mazeGenerator.ClearMaze();
 
         this.width = width;
         this.height = height;
 
-        coroutine = mazeGenerator.CreateMaze(width, height, cellPrefab, transform);
-        StartCoroutine(coroutine);
+        coroutine = mazeGenerator.CreateMaze(width, height, cellPrefab, transform, startPrefab, finishPrefab, gameManager);
+        StartCoroutine(coroutine);    
     }
 
     public int Width => width;
