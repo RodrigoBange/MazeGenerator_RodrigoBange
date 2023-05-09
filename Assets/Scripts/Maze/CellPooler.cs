@@ -5,17 +5,43 @@ using UnityEngine.Pool;
 
 public class CellPooler : MonoBehaviour
 {
-    ObjectPool<CellController> pool;
+    public ObjectPool<CellController> pool;
 
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField]
+    CellController cellPrefab;
+
+    private void Awake()
     {
-        
+        // Initialize pool
+        pool = new ObjectPool<CellController>(CreateCell, OnTakeCellFromPool, OnReturnCellToPool);
     }
 
-    // Update is called once per frame
-    void Update()
+    /// <summary>
+    /// Creates a new CellController object.
+    /// </summary>
+    /// <returns>Returns a CellController object.</returns>
+    private CellController CreateCell()
     {
-        
+        var cell = Instantiate(cellPrefab);
+        cell.transform.parent = gameObject.transform;
+        return cell;
+    }
+
+    /// <summary>
+    /// Activates a CellController object in the pool.
+    /// </summary>
+    /// <param name="cell">The cell to activate.</param>
+    private void OnTakeCellFromPool(CellController cell)
+    {
+        cell.gameObject.SetActive(true);
+    }
+
+    /// <summary>
+    /// Disabled a CellController object in the pool.
+    /// </summary>
+    /// <param name="cell">The cell to deactivate.</param>
+    private void OnReturnCellToPool(CellController cell)
+    {
+        cell.gameObject.SetActive(false);
     }
 }

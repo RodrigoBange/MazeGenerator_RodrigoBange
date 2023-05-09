@@ -16,7 +16,6 @@ public class FinishCollisionDetector : MonoBehaviour
             pBehaviour.AllowMovement(false);
             pBehaviour.goalPosition = transform.position;
             pBehaviour.flyUp = true;
-            Debug.Log(transform.position);
         }
     }
 }

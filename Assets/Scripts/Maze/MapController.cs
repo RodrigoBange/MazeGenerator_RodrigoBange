@@ -4,19 +4,7 @@ using UnityEngine;
 public class MapController : MonoBehaviour
 {
     [SerializeField]
-    private IMazeGenerator mazeGenerator;
-
-    [SerializeField]
-    private GameManager gameManager;
-
-    [SerializeField]
-    private GameObject cellPrefab;
-
-    [SerializeField]
-    private GameObject startPrefab;
-
-    [SerializeField]
-    private GameObject finishPrefab;
+    private MazeGenerator mazeGenerator;
 
     private IEnumerator coroutine;
 
@@ -41,32 +29,34 @@ public class MapController : MonoBehaviour
         }
     }
 
-
-    // Start is called before the first frame update
     void Start()
     {
-        mazeGenerator = gameObject.AddComponent<MazeGenerator>();
-
         GenerateMaze(10, 10);
     }
 
+    /// <summary>
+    /// Generates a maze with the given sizes.
+    /// </summary>
+    /// <param name="width">The horizontal size of the maze.</param>
+    /// <param name="height">The vertical size of the maze.</param>
     public void GenerateMaze(int width, int height)
     {
-        // Check to avoid createMaze spam
+        // Check to avoid creating a maze while the previous is in progress.
         if (!mazeGenerator.IsDone)
         {
             return;
         }
 
         // Enable map camera
-        gameManager.ActivatePlayerCamera(false);
+        GameManager.Instance.ActivatePlayerCamera(false);
+        //gameManager.ActivatePlayerCamera(false);
 
         mazeGenerator.ClearMaze();
 
         this.width = width;
         this.height = height;
 
-        coroutine = mazeGenerator.CreateMaze(width, height, cellPrefab, transform, startPrefab, finishPrefab, gameManager);
+        coroutine = mazeGenerator.CreateMaze(width, height, transform);
         StartCoroutine(coroutine);    
     }
 
