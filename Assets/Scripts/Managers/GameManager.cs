@@ -17,6 +17,9 @@ public class GameManager : MonoBehaviour
 
     private Vector3 respawnPoint;
 
+    [SerializeField]
+    private UIController uiController;
+
     void Awake()
     {
         if (instance == null)
@@ -58,7 +61,13 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void RespawnPlayer()
     {
+        uiController.AddAttempt();
         player.GetComponent<Rigidbody>().velocity = Vector3.zero;
         player.transform.SetPositionAndRotation(respawnPoint, Quaternion.Euler(0, 180, 0));
+    }
+
+    public void SetCameraPosition()
+    {
+        mazeCamera.GetComponent<MazeCameraController>().SetCameraPosition();
     }
 }

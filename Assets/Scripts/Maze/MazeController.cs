@@ -1,19 +1,19 @@
 using System.Collections;
 using UnityEngine;
 
-public class MapController : MonoBehaviour
+public class MazeController : MonoBehaviour
 {
     [SerializeField]
     private MazeGenerator mazeGenerator;
 
     private IEnumerator coroutine;
 
-    private static MapController instance;
+    private static MazeController instance;
 
     private int width;
     private int height;
 
-    public static MapController Instance
+    public static MazeController Instance
     {
         get
         {
@@ -29,11 +29,6 @@ public class MapController : MonoBehaviour
         }
     }
 
-    void Start()
-    {
-        GenerateMaze(10, 10);
-    }
-
     /// <summary>
     /// Generates a maze with the given sizes.
     /// </summary>
@@ -47,14 +42,14 @@ public class MapController : MonoBehaviour
             return;
         }
 
-        // Enable map camera
-        GameManager.Instance.ActivatePlayerCamera(false);
-        //gameManager.ActivatePlayerCamera(false);
-
         mazeGenerator.ClearMaze();
 
         this.width = width;
         this.height = height;
+
+        // Enable map camera
+        GameManager.Instance.ActivatePlayerCamera(false);
+        GameManager.Instance.SetCameraPosition();
 
         coroutine = mazeGenerator.CreateMaze(width, height, transform);
         StartCoroutine(coroutine);    
