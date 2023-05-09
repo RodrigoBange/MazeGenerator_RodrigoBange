@@ -580,7 +580,7 @@ GameObject:
   - component: {fileID: 515962828}
   - component: {fileID: 515962832}
   m_Layer: 0
-  m_Name: Map Camera
+  m_Name: Maze Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
