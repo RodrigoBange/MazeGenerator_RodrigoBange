@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class MazeGenerator : MonoBehaviour, IMazeGenerator
@@ -7,8 +8,10 @@ public class MazeGenerator : MonoBehaviour, IMazeGenerator
     private bool isDone = true;
 
     private CellController[,] cells;
+    private GameObject startPlatform;
+    private GameObject finishPlatform;
 
-    public IEnumerator CreateMaze(int width, int height, GameObject cellPrefab, Transform parent)
+    public IEnumerator CreateMaze(int width, int height, GameObject cellPrefab, Transform parent, GameObject startPrefab, GameObject finishPrefab, GameManager manager)
     {
         isDone = false;
 
@@ -58,19 +61,31 @@ public class MazeGenerator : MonoBehaviour, IMazeGenerator
 
         // Values to present parts of the maze step-by-step instead of instant display.
         float maxCells = width * height;
-        float baseSpeed = maxCells / 100;
-        float speed = baseSpeed;
+        float chunks = maxCells / 100;
+        WaitForSeconds delay;
+
+        // Limit amount of steps and set delay
+        if (chunks > 60)
+        {
+            chunks = 60;
+            delay = new(0.125f);
+        } else
+        {
+            delay = new(0.01f);
+        }
+
+        float progressChunks = chunks;
         float i = 0;
 
         while (true) // While coroutine is active
         {
             // Load a chunk of the maze at a time.
             i++;
-            if (i >= speed)
+            if (i >= progressChunks)
             {
-                speed += baseSpeed;
-                yield return new WaitForSeconds(0.004f);
-                //yield return new WaitForSeconds(1f);
+                progressChunks += chunks;
+
+                yield return delay;
             }
 
             // Fixes a problem of path incorrectly being left as correct, if it had more than one possible neighbor,
@@ -145,12 +160,9 @@ public class MazeGenerator : MonoBehaviour, IMazeGenerator
             // Pick random neighbor from the neighbors.
             CellController nextCell = neighbors[Random.Range(0, neighbors.Count)];
 
-            // If the next cell is connectable (aka, path has more than one cell), connect the cells.
-            //if (nextCell.IsConnectable)
-            //{
+            // Connect the cells.
             currentCell.TogglePath(currentCell.GetSide(nextCell), true);
             nextCell.TogglePath(nextCell.GetSide(currentCell), true);
-            //}
 
             unvisitedCells.Remove(nextCell);
 
@@ -197,11 +209,22 @@ public class MazeGenerator : MonoBehaviour, IMazeGenerator
         }
 
         // Open the top path of the first cell, and the bottom path of the last cell.
-        cells[Random.Range(0, cells.GetLength(0)), 0].TogglePath(Side.Top, true);
-        cells[Random.Range(0, cells.GetLength(0)), height - 1].TogglePath(Side.Bottom, true);
+        CellController start = cells[Random.Range(0, cells.GetLength(0)), 0];
+        CellController finish = cells[Random.Range(0, cells.GetLength(0)), height - 1];
+        start.TogglePath(Side.Top, true);
+        finish.TogglePath(Side.Bottom, true);
+
+        // Create spawn and finish
+        startPlatform = Instantiate(startPrefab, parent);
+        startPlatform.transform.position = new Vector3(start.Position.x, parent.position.y - 0.1f, start.Position.z + 1.175f);
+        finishPlatform = Instantiate(finishPrefab, parent);
+        finishPlatform.transform.position = new Vector3(finish.Position.x, parent.position.y - 0.2f, -finish.Position.z - 1.175f);
+        //cells[Random.Range(0, cells.GetLength(0)), 0].TogglePath(Side.Top, true);
+        //cells[Random.Range(0, cells.GetLength(0)), height - 1].TogglePath(Side.Bottom, true);
 
         isDone = true;
         Debug.Log("Maze loaded");
+        manager.SetUpPlayer(startPlatform.transform.position);
     }
 
     /// <summary>
@@ -225,6 +248,9 @@ public class MazeGenerator : MonoBehaviour, IMazeGenerator
         {
             Destroy(cell.gameObject);
         }
+
+        Destroy(startPlatform);
+        Destroy(finishPlatform);
 
         cells = new CellController[0, 0];
     }

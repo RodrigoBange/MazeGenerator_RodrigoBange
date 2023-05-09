@@ -1,23 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    [SerializeField]
-    private float cameraHeight;
+    public Transform target;
+    public Vector3 offset;
 
-    // TODO: Implement camera functionality
-    void Start()
+    private void Update()
     {
-        
-    }
-
-    void Update()
-    {
-        float x = (MapController.Instance.transform.position.x + MapController.Instance.Width / 2) - 0.5f;
-        float y = (MapController.Instance.transform.position.y - MapController.Instance.Height / 2) + 0.5f;
-        float z = (MapController.Instance.Width > MapController.Instance.Height ? MapController.Instance.Width : MapController.Instance.Height) + cameraHeight;
-        transform.position = new Vector3(x, y, -z);
+        if (target.position.y > 19f)
+        {
+            transform.position = new Vector3(target.position.x, 21, target.position.z) + offset;
+        }
     }
 }

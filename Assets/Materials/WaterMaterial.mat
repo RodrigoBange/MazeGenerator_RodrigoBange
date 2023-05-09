@@ -109,7 +109,7 @@ Material:
     - _Intersection_Foam_Cutoff: 0.875
     - _Intersection_Foam_Depth: 0.75
     - _Intersection_Foam_Direction: 0.154
-    - _Intersection_Foam_Fade: 1
+    - _Intersection_Foam_Fade: 1.93
     - _Intersection_Foam_Speed: 0.131
     - _Intersection_Foam_Tiling: 100
     - _Metallic: 0
@@ -132,7 +132,7 @@ Material:
     - _Surface_Foam_Direction: 0.413
     - _Surface_Foam_Distortion: 0.94
     - _Surface_Foam_Speed: 0.03
-    - _Surface_Foam_Tiling: -30
+    - _Surface_Foam_Tiling: -90
     - _Tiling: 2.04
     - _Wave_Length: 2.8
     - _Wave_Speed: 0.57
@@ -146,11 +146,11 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Foam_Color: {r: 1, g: 1, b: 1, a: 1}
     - _Horizon_Color: {r: 1, g: 0.47058824, b: 0, a: 1}
-    - _Intersection_Foam_Color: {r: 0.70980394, g: 0.78037703, b: 0.81960785, a: 0}
+    - _Intersection_Foam_Color: {r: 0.70980394, g: 0.78037703, b: 0.81960785, a: 0.12156863}
     - _Overlay: {r: 0.5990566, g: 0.88746065, b: 1, a: 1}
     - _Shallow_Color: {r: 0.47740602, g: 0, b: 0.7830189, a: 0.8156863}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _Surface_Foam_Color: {r: 0, g: 1, b: 0.9083636, a: 0.019607844}
+    - _Surface_Foam_Color: {r: 0, g: 1, b: 0.9083636, a: 0.0627451}
     - _UV: {r: -0.12, g: 3, b: 0, a: 0}
     - _Wave_Directions: {r: 0, g: 0.5, b: 1, a: 0.2}
   m_BuildTextureStacks: []

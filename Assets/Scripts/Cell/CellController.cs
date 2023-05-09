@@ -53,6 +53,7 @@ public class CellController : MonoBehaviour
     {
         walls[(int)side].GetComponent<MeshRenderer>().enabled = active;
         walls[(int)side].layer = active ? 0 : 1;
+        walls[(int)side].GetComponent<BoxCollider>().enabled = active;
     }
 
     public void SetCellActive(bool active)
