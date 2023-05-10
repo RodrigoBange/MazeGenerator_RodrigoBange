@@ -62,9 +62,7 @@ public class CellController : MonoBehaviour
     /// <param name="active">Boolean to open(true) the path or close(false)</param>
     public void TogglePath(Side side, bool active)
     {
-        walls[(int)side].GetComponent<MeshRenderer>().enabled = active;
-        walls[(int)side].layer = active ? 0 : 1;
-        walls[(int)side].GetComponent<BoxCollider>().enabled = active;
+        walls[(int)side].SetActive(active);
     }
 
     /// <summary>
