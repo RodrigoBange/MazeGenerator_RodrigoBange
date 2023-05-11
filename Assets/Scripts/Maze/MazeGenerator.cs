@@ -50,7 +50,7 @@ public class MazeGenerator : MonoBehaviour, IMazeGenerator
         pathIndex = 0;
 
         // Create the cells
-        StartCoroutine(CreateMazeCells());
+        yield return StartCoroutine(CreateMazeCells());
 
         // First we pick a random start and goal cell for the first path.
         PickRandomPath();
