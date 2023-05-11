@@ -80,8 +80,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 3
-  fallThreshold: -15
-  currentState: 0
+  flyUp: 1
+  goalPosition: {x: 0, y: 0, z: 0}
 --- !u!95 &4566497985045489212
 Animator:
   serializedVersion: 5
@@ -359,7 +359,7 @@ GameObject:
   - component: {fileID: 624390417053881624}
   - component: {fileID: 7099655025966399806}
   m_Layer: 0
-  m_Name: Slime_03
+  m_Name: Slime
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

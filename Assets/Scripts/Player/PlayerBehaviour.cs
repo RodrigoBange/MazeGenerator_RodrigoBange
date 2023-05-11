@@ -67,11 +67,11 @@ public class PlayerBehaviour : MonoBehaviour
         {
             Quaternion rotationTo = Quaternion.LookRotation(movementVector, Vector3.up);
             transform.rotation = Quaternion.RotateTowards(transform.rotation, rotationTo, 720f * Time.deltaTime);
-            animator.SetBool("Walk", true);
+            animator.SetBool("Walk", true); // Animate player
         }    
         else
         {
-            animator.SetBool("Walk", false);
+            animator.SetBool("Walk", false); // Idle Animate player
         }
     }
 

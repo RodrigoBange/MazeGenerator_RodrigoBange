@@ -15,7 +15,13 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private GameObject player;
 
+    [SerializeField]
+    private GameObject startPlatform;
+
     private Vector3 respawnPoint;
+
+    [SerializeField]
+    private UIController uiController;
 
     void Awake()
     {
@@ -44,13 +50,22 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// Sets up the player. Called after the maze has been loaded.
     /// </summary>
-    /// <param name="spawnLocation">Location of the players respawn.</param>
-    public void SetUpPlayer(Vector3 spawnLocation)
+    public void SetUpPlayer()
     {
-        respawnPoint = new Vector3(spawnLocation.x, spawnLocation.y + 5f, spawnLocation.z);
+        respawnPoint = new Vector3(startPlatform.transform.position.x, startPlatform.transform.position.y + 5f, startPlatform.transform.position.z);
         player.transform.position = respawnPoint;
         player.SetActive(true);
         ActivatePlayerCamera(true);
+
+        Invoke(nameof(ActivateTimer), 1.2f);
+    }
+
+    /// <summary>
+    /// Activate the timer in the UI
+    /// </summary>
+    private void ActivateTimer()
+    {
+        uiController.timerActive = true;
     }
 
     /// <summary>
@@ -58,7 +73,16 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void RespawnPlayer()
     {
+        uiController.AddAttempt();
         player.GetComponent<Rigidbody>().velocity = Vector3.zero;
         player.transform.SetPositionAndRotation(respawnPoint, Quaternion.Euler(0, 180, 0));
+    }
+
+    /// <summary>
+    /// Sets the Maze Camera position
+    /// </summary>
+    public void SetCameraPosition()
+    {
+        mazeCamera.GetComponent<MazeCameraController>().SetCameraPosition();
     }
 }
