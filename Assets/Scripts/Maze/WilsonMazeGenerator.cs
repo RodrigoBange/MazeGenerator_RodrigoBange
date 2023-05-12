@@ -115,6 +115,7 @@ public class WilsonMazeGenerator : MonoBehaviour, IMazeGenerator
 
         // Maze has been loaded.
         isDone = true;
+        GameManager.Instance.MazeGenerated();
     }
 
     /// <summary>
@@ -345,5 +346,15 @@ public class WilsonMazeGenerator : MonoBehaviour, IMazeGenerator
         finishPlatform.SetActive(false);
 
         cells = new CellController[0, 0];
+    }
+
+    /// <summary>
+    /// Stops all running coroutines in the script.
+    /// </summary>
+    public void CancelGeneration()
+    {
+        isDone = true;
+        StopAllCoroutines();
+        ClearMaze();
     }
 }

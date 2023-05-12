@@ -85,4 +85,9 @@ public class GameManager : MonoBehaviour
     {
         mazeCamera.GetComponent<MazeCameraController>().SetCameraPosition();
     }
+
+    public void MazeGenerated()
+    {
+        uiController.DisplayPlayButton();
+    }
 }

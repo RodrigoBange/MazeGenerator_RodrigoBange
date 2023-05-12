@@ -28,6 +28,16 @@ public class UIController : MonoBehaviour
     [SerializeField]
     private CanvasGroup titleUIGroup;
 
+    [SerializeField]
+    private TextMeshProUGUI generatingText;
+
+    [SerializeField]
+    private Button generateButton, cancelButton, playButton;
+
+    public bool generatingMap;
+    public bool mazeGenerated = false;
+    private readonly WaitForSeconds mapDelay = new(0.3f), titleDelay = new(0.0025f);
+
     private bool fadeTitle;
 
     public float timePlayed;
@@ -40,7 +50,7 @@ public class UIController : MonoBehaviour
         if (timerActive)
         {
             timePlayed += Time.deltaTime;
-            timerText.text = timePlayed.ToString("00:00");
+            timerText.text = Mathf.Floor(timePlayed / 60).ToString("00") + ":" + Mathf.FloorToInt(timePlayed % 60).ToString("00");
         }
     }
 
@@ -62,12 +72,41 @@ public class UIController : MonoBehaviour
         {
             MazeController.Instance.GenerateMaze(width, height, MazeAlgo.PrimAlgo);
         }
+
+        generatingMap = true;
+        generatingText.gameObject.SetActive(true);
+        generateButton.interactable = false;
+        cancelButton.interactable = true;
+        playButton.interactable = false;
+        StartCoroutine(GenerationProcess());
+    }
+
+    private IEnumerator GenerationProcess()
+    {
+        while (generatingMap)
+        {
+            generatingText.text += ".";
+            if (generatingText.text == "GENERATING....")
+            {
+                generatingText.text = "GENERATING";
+            }
+            yield return mapDelay;
+        }        
+    }
+
+    public void DisplayPlayButton()
+    {
+        generatingMap = false;
+        generatingText.gameObject.SetActive(false);
+        generateButton.interactable = true;
+        cancelButton.interactable = false;
+        playButton.interactable = true;
     }
 
     /// <summary>
     /// Enables the Maze Generation Menu UI
     /// </summary>
-    private void EnableMenuUI()
+    public void EnableMenuUI()
     {
         titleUI.SetActive(false);
         menuUI.SetActive(true);
@@ -86,8 +125,7 @@ public class UIController : MonoBehaviour
         fadeTitle = true;
         titleController.ActivateTitleAnimation();
 
-        StartCoroutine(nameof(FadeTitleScreen));
-        
+        StartCoroutine(FadeTitleScreen());
     }
 
     /// <summary>
@@ -95,15 +133,10 @@ public class UIController : MonoBehaviour
     /// </summary>
     IEnumerator FadeTitleScreen()
     {
-        while (titleUIGroup.alpha >= 0)
+        while (titleUIGroup.alpha > 0)
         {
             titleUIGroup.alpha -= 0.0025f;
-
-            if (titleUIGroup.alpha < 0.0025f)
-            {
-                EnableMenuUI();
-            }
-            yield return new WaitForSeconds(0.0025f);
+            yield return titleDelay;
         }
     }
 
@@ -168,5 +201,23 @@ public class UIController : MonoBehaviour
     public void OnSliderHeightChange()
     {
         heightText.text = heightSlider.value.ToString();
+    }
+
+    /// <summary>
+    /// Cancels the maze generation
+    /// </summary>
+    public void OnCancelClick()
+    {        
+        MazeController.Instance.CancelGeneration();
+        GenerationCancel();
+    }
+
+    private void GenerationCancel()
+    {
+        generatingMap = false;
+        generatingText.gameObject.SetActive(false);
+        generateButton.interactable = true;
+        cancelButton.interactable = false;
+        playButton.interactable = false;
     }
 }

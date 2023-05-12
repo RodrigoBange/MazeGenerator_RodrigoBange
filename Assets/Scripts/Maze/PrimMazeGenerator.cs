@@ -78,6 +78,7 @@ public class PrimMazeGenerator : MonoBehaviour, IMazeGenerator
 
         // Maze has been generated
         isDone = true;
+        GameManager.Instance.MazeGenerated();
     }
 
     /// <summary>
@@ -247,5 +248,15 @@ public class PrimMazeGenerator : MonoBehaviour, IMazeGenerator
         finishPlatform.SetActive(false);
 
         cells = new CellController[0, 0];
+    }
+
+    /// <summary>
+    /// Stops all running coroutines in the script.
+    /// </summary>
+    public void CancelGeneration()
+    {
+        isDone = true;
+        StopAllCoroutines();
+        ClearMaze();
     }
 }

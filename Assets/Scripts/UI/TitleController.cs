@@ -45,7 +45,8 @@ public class TitleController : MonoBehaviour
     /// Swap from the title screen to the game screen UI 
     /// </summary>
     private void ActivateGenerationMenu()
-    {        
+    {
+        uiController.EnableMenuUI();
         gameObject.SetActive(false);
     }
 }
