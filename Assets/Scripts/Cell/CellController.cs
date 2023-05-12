@@ -7,10 +7,13 @@ public class CellController : MonoBehaviour
     [SerializeField]
     private GameObject[] walls;
 
+    private Vector3 position = Vector3.zero;
+
+    /// <summary>
+    /// Wilson's Algorithm Values
+    /// </summary>
     [SerializeField]
     private List<CellController> neighbors = new();
-
-    private Vector3 position = Vector3.zero;
 
     [SerializeField]
     private int pathIndex = -1;
@@ -18,17 +21,11 @@ public class CellController : MonoBehaviour
     [SerializeField]
     private bool isActive;
 
-    public int PathIndex
-    {
-        get
-        {
-            return pathIndex;
-        }
-        set
-        {
-            pathIndex = value;
-        }
-    }
+    /// <summary>
+    /// Prim's Algorithm Value
+    /// </summary>
+    [SerializeField]
+    private bool isVisited = false;
 
     public Vector3 Position
     {
@@ -44,6 +41,38 @@ public class CellController : MonoBehaviour
             transform.localPosition = pos;
         }
     }
+
+    public List<CellController> Neighbors
+    {
+        get
+        {
+            return neighbors;
+        }
+    }
+
+    public int PathIndex
+    {
+        get
+        {
+            return pathIndex;
+        }
+        set
+        {
+            pathIndex = value;
+        }
+    }
+
+    public bool IsActive => isActive;
+
+    public bool IsVisited
+    {
+        get { return isVisited; }
+        set { isVisited = value; }
+    }
+
+    [SerializeField]
+    private bool isConnectable = true;
+    public bool IsConnectable { get => isConnectable; set => isConnectable = value; }
 
     /// <summary>
     /// Sets the position of the cell in the maze.
@@ -118,20 +147,6 @@ public class CellController : MonoBehaviour
         return walls[(int)side].GetComponent<MeshRenderer>().enabled;
     }
 
-    public List<CellController> Neighbors
-    {
-        get
-        {
-            return neighbors;
-        }
-    }
-
-    public bool IsActive => isActive;
-
-    [SerializeField]
-    private bool isConnectable = true;
-    public bool IsConnectable { get => isConnectable; set => isConnectable = value; }
-
     /// <summary>
     /// Checks the amount of paths that are currently open.
     /// </summary>
@@ -165,6 +180,7 @@ public class CellController : MonoBehaviour
     {
         pathIndex = -1;
         isConnectable = true;
+        isVisited = false;
         position = Vector3.zero;
         neighbors.Clear();
         TogglePath(Side.Top, false);

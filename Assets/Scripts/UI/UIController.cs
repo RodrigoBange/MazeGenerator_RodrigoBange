@@ -1,9 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
 using Slider = UnityEngine.UI.Slider;
 
 public class UIController : MonoBehaviour
@@ -16,6 +15,9 @@ public class UIController : MonoBehaviour
 
     [SerializeField]
     private Slider widthSlider, heightSlider;
+
+    [SerializeField]
+    private ToggleGroup mazeToggles;
 
     [SerializeField]
     private TextMeshProUGUI widthText, heightText;
@@ -49,7 +51,17 @@ public class UIController : MonoBehaviour
     {
         int width = (int)widthSlider.value;
         int height = (int)heightSlider.value;
-        MazeController.Instance.GenerateMaze(width, height);
+
+        Toggle activeToggle = mazeToggles.ActiveToggles().FirstOrDefault();
+        
+        if (activeToggle.gameObject.name == "Wilson")
+        {
+            MazeController.Instance.GenerateMaze(width, height, MazeAlgo.WilsonAlgo);
+        }
+        else if (activeToggle.gameObject.name == "Prim")
+        {
+            MazeController.Instance.GenerateMaze(width, height, MazeAlgo.PrimAlgo);
+        }
     }
 
     /// <summary>

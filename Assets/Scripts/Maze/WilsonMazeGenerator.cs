@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MazeGenerator : MonoBehaviour, IMazeGenerator
+public class WilsonMazeGenerator : MonoBehaviour, IMazeGenerator
 {
     [SerializeField]
     private GameObject startPlatform, finishPlatform;
@@ -32,6 +32,11 @@ public class MazeGenerator : MonoBehaviour, IMazeGenerator
     private int width, height;
 
     private bool isDone = true;
+
+    /// <summary>
+    /// Returns true if the maze generation is done.
+    /// </summary>
+    public bool IsDone => isDone;
 
     /// <summary>
     /// Generates a maze of cells.
@@ -98,8 +103,8 @@ public class MazeGenerator : MonoBehaviour, IMazeGenerator
                 continue;
             }
 
-            bool resultPathsLeft = PickNextPath(); //If result is false, all paths have been discovered. 
-            if (!resultPathsLeft) 
+            //If result is false, all paths have been discovered. 
+            if (!PickNextPath()) 
             { 
                 break; // Generation is finished.
             }
@@ -320,16 +325,6 @@ public class MazeGenerator : MonoBehaviour, IMazeGenerator
         finishPlatform.SetActive(true);
         finishPlatform.transform.position = new Vector3(finish.Position.x, parent.position.y - 0.2f, -finish.Position.z - 1.175f);
     }
-
-    /// <summary>
-    /// Returns true if the maze generation is done.
-    /// </summary>
-    public bool IsDone => isDone;
-
-    /// <summary>
-    /// Returns the entire grid of cells.
-    /// </summary>
-    public CellController[,] Cells => cells;
 
     /// <summary>
     /// Clears the maze of all cells and stores them back in a pool. Returns if no cell has been generated.
