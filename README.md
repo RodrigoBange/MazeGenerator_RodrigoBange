@@ -5,7 +5,7 @@ The aesthetics of the project are inspired by Tunic as I love the isometric view
 
 ## Authors
 
-- Rodrigo Bange
+- Rodrigo Bange [https://github.com/RodrigoBange]
 
 
 ## Features
