@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class FinishCollisionDetector : MonoBehaviour
@@ -16,6 +14,9 @@ public class FinishCollisionDetector : MonoBehaviour
             pBehaviour.AllowMovement(false);
             pBehaviour.goalPosition = transform.position;
             pBehaviour.flyUp = true;
+
+            // Notify the manager that the level has been finished.
+            GameManager.Instance.LevelFinished();
         }
     }
 }

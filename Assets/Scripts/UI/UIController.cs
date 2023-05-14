@@ -1,223 +1,56 @@
-using System.Collections;
-using System.Linq;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-using Slider = UnityEngine.UI.Slider;
 
 public class UIController : MonoBehaviour
 {
     [SerializeField]
-    private GameObject titleUI, menuUI, gameUI, pauseUI;
+    private GameObject titleUI, menuUI, gameUI, pauseUI, levelCompleteUI;
 
     [SerializeField]
-    private TextMeshProUGUI timerText, attemptsText;
+    private GameUIController gameUIController;
 
     [SerializeField]
-    private Slider widthSlider, heightSlider;
+    private LevelCompleteUIController levelCompleteController;
 
-    [SerializeField]
-    private ToggleGroup mazeToggles;
-
-    [SerializeField]
-    private TextMeshProUGUI widthText, heightText;
-
-    [SerializeField]
-    private TitleController titleController;
-
-    [SerializeField]
-    private CanvasGroup titleUIGroup;
-
-    [SerializeField]
-    private TextMeshProUGUI generatingText;
-
-    [SerializeField]
-    private Button generateButton, cancelButton, playButton;
-
-    public bool generatingMap;
-    public bool mazeGenerated = false;
-    private readonly WaitForSeconds mapDelay = new(0.3f), titleDelay = new(0.0025f);
-
-    private bool fadeTitle;
-
-    public float timePlayed;
-    public bool timerActive;
-
-    public int attemptsCount;
-
-    private void Update()
+    /// <summary>
+    /// Enables the Maze Generation Menu UI.
+    /// </summary>
+    public void ToggleMenuUI(bool value)
     {
-        if (timerActive)
-        {
-            timePlayed += Time.deltaTime;
-            timerText.text = Mathf.Floor(timePlayed / 60).ToString("00") + ":" + Mathf.FloorToInt(timePlayed % 60).ToString("00");
-        }
+        DisableAllUI();
+        menuUI.SetActive(value);
     }
 
     /// <summary>
-    /// Tells the MazeController to generate a new maze
+    /// Enables the Game UI.
     /// </summary>
-    public void OnGenerateNewMazeClick()
+    public void ToggleGameUI(bool value)
     {
-        int width = (int)widthSlider.value;
-        int height = (int)heightSlider.value;
-
-        Toggle activeToggle = mazeToggles.ActiveToggles().FirstOrDefault();
-        
-        if (activeToggle.gameObject.name == "Wilson")
-        {
-            MazeController.Instance.GenerateMaze(width, height, MazeAlgo.WilsonAlgo);
-        }
-        else if (activeToggle.gameObject.name == "Prim")
-        {
-            MazeController.Instance.GenerateMaze(width, height, MazeAlgo.PrimAlgo);
-        }
-
-        generatingMap = true;
-        generatingText.gameObject.SetActive(true);
-        generateButton.interactable = false;
-        cancelButton.interactable = true;
-        playButton.interactable = false;
-        StartCoroutine(GenerationProcess());
-    }
-
-    private IEnumerator GenerationProcess()
-    {
-        while (generatingMap)
-        {
-            generatingText.text += ".";
-            if (generatingText.text == "GENERATING....")
-            {
-                generatingText.text = "GENERATING";
-            }
-            yield return mapDelay;
-        }        
-    }
-
-    public void DisplayPlayButton()
-    {
-        generatingMap = false;
-        generatingText.gameObject.SetActive(false);
-        generateButton.interactable = true;
-        cancelButton.interactable = false;
-        playButton.interactable = true;
+        DisableAllUI();
+        gameUI.SetActive(value);
     }
 
     /// <summary>
-    /// Enables the Maze Generation Menu UI
+    /// Enables the completion UI
     /// </summary>
-    public void EnableMenuUI()
+    public void ToggleLevelCompleteUI()
+    {
+        DisableAllUI();
+
+        // Get variable and set to levelComplete.
+        levelCompleteController.timePlayed = gameUIController.timePlayed;
+        levelCompleteController.attempts = gameUIController.attemptsCount;
+        levelCompleteUI.SetActive(true);
+    }
+
+    /// <summary>
+    /// Sets all menu's to inactive, used before activing one. Avoids duplicate code.
+    /// </summary>
+    private void DisableAllUI()
     {
         titleUI.SetActive(false);
-        menuUI.SetActive(true);
-    }
-
-    /// <summary>
-    /// Enter the game, leave the title screen.
-    /// </summary>
-    public void OnTitleClick()
-    {
-        if (fadeTitle == true) // Disable button spam
-        {
-            return;
-        }
-
-        fadeTitle = true;
-        titleController.ActivateTitleAnimation();
-
-        StartCoroutine(FadeTitleScreen());
-    }
-
-    /// <summary>
-    /// Fades out the title screen and activates the Maze Menu UI.
-    /// </summary>
-    IEnumerator FadeTitleScreen()
-    {
-        while (titleUIGroup.alpha > 0)
-        {
-            titleUIGroup.alpha -= 0.0025f;
-            yield return titleDelay;
-        }
-    }
-
-    /// <summary>
-    /// Starts the game after the start game button is clicked.
-    /// </summary>
-    public void OnStartGameClick()
-    {
-        attemptsCount = 0;
-        GameManager.Instance.SetUpPlayer();
         menuUI.SetActive(false);
-        gameUI.SetActive(true);
-    }
-
-    /// <summary>
-    /// Pauses the game after the pause button is clicked.
-    /// </summary>
-    public void OnPauseGameClick()
-    {
-        pauseUI.SetActive(true);
-        Time.timeScale = 0f;
-    }
-
-    /// <summary>
-    /// Resumes the game after the resume button is clicked.
-    /// </summary>
-    public void OnResumeGameClick()
-    {
+        gameUI.SetActive(false);
         pauseUI.SetActive(false);
-        Time.timeScale = 1f;
-    }    
-
-    /// <summary>
-    /// Activates the timer.
-    /// </summary>
-    public void ActivateTimer()
-    {
-        timePlayed = 0f;
-        timerActive = true;
-    }
-
-    /// <summary>
-    /// Adds +1 to the attempts counter.
-    /// </summary>
-    public void AddAttempt()
-    {
-        attemptsCount++;
-        attemptsText.text = attemptsCount.ToString();
-    }
-
-    /// <summary>
-    /// Updates the maze width text value on the Maze Menu UI.
-    /// </summary>
-    public void OnSliderWidthChange()
-    {
-        widthText.text = widthSlider.value.ToString();
-    }
-
-    /// <summary>
-    /// Updates the maze height text value on the Maze Menu UI.
-    /// </summary>
-    public void OnSliderHeightChange()
-    {
-        heightText.text = heightSlider.value.ToString();
-    }
-
-    /// <summary>
-    /// Cancels the maze generation
-    /// </summary>
-    public void OnCancelClick()
-    {        
-        MazeController.Instance.CancelGeneration();
-        GenerationCancel();
-    }
-
-    private void GenerationCancel()
-    {
-        generatingMap = false;
-        generatingText.gameObject.SetActive(false);
-        generateButton.interactable = true;
-        cancelButton.interactable = false;
-        playButton.interactable = false;
+        levelCompleteUI.SetActive(false);
     }
 }

@@ -23,6 +23,12 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private UIController uiController;
 
+    [SerializeField]
+    private GameUIController gameUIController;
+
+    [SerializeField]
+    private GenerationMenuUIController generationMenuUIController;
+
     void Awake()
     {
         if (instance == null)
@@ -40,7 +46,7 @@ public class GameManager : MonoBehaviour
         playerCamera.SetActive(value);
         mazeCamera.SetActive(!value);
 
-        // Set position of camera
+        // Set position of camera.
         if (!value)
         {
             mazeCamera.GetComponent<MazeCameraController>().SetCameraPosition();
@@ -52,20 +58,18 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void SetUpPlayer()
     {
+        if (player.activeSelf) // If player was still active, reset.
+        { 
+            player.SetActive(false); 
+        }
+
+        player.transform.SetPositionAndRotation(respawnPoint, Quaternion.Euler(0, 180, 0));
         respawnPoint = new Vector3(startPlatform.transform.position.x, startPlatform.transform.position.y + 5f, startPlatform.transform.position.z);
         player.transform.position = respawnPoint;
+
+        uiController.ToggleGameUI(true);
         player.SetActive(true);
         ActivatePlayerCamera(true);
-
-        Invoke(nameof(ActivateTimer), 1.2f);
-    }
-
-    /// <summary>
-    /// Activate the timer in the UI
-    /// </summary>
-    private void ActivateTimer()
-    {
-        uiController.timerActive = true;
     }
 
     /// <summary>
@@ -73,7 +77,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void RespawnPlayer()
     {
-        uiController.AddAttempt();
+        gameUIController.AddAttempt();
         player.GetComponent<Rigidbody>().velocity = Vector3.zero;
         player.transform.SetPositionAndRotation(respawnPoint, Quaternion.Euler(0, 180, 0));
     }
@@ -86,8 +90,31 @@ public class GameManager : MonoBehaviour
         mazeCamera.GetComponent<MazeCameraController>().SetCameraPosition();
     }
 
+    /// <summary>
+    /// Updates the UI that the maze has been generated and can be played.
+    /// </summary>
     public void MazeGenerated()
     {
-        uiController.DisplayPlayButton();
+        generationMenuUIController.DisplayPlayButton();
+    }
+
+    /// <summary>
+    /// Quits the current level and opens the maze menu.
+    /// </summary>
+    public void QuitLevel()
+    {
+        player.SetActive(false);
+        ActivatePlayerCamera(false);
+        uiController.ToggleMenuUI(true);
+    }
+
+    /// <summary>
+    /// Displays the level completion screen and disables the player.
+    /// </summary>
+    public void LevelFinished()
+    {
+        // Display UI.
+        gameUIController.StopTimer();
+        uiController.ToggleLevelCompleteUI();
     }
 }

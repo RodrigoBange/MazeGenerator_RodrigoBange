@@ -3,27 +3,37 @@ using UnityEngine.InputSystem;
 
 public class PlayerBehaviour : MonoBehaviour
 {    
-    private CustomInput input = null;
-    private Vector3 movementVector = Vector3.zero;
+    [SerializeField]
     private Rigidbody rb = null;
 
-    public float moveSpeed = 10f;
-    public bool flyUp = true;
-    public Vector3 goalPosition = Vector3.zero;
-    private bool goalPositionReached = false;
-
+    [SerializeField]
     private Animator animator;
+
+    private CustomInput input = null;
+
+    private Vector3 movementVector = Vector3.zero;
+
+    public float moveSpeed = 10f;
+
+    public bool flyUp = false;
+
+    public Vector3 goalPosition = Vector3.zero;
+
+    private bool goalPositionReached = false;
 
     private void Awake()
     {
         input = new CustomInput();       
-        rb = GetComponent<Rigidbody>();
-        animator = GetComponent<Animator>();
     }
 
     private void OnEnable()
     {
-        // Enable input
+        // Set default values.
+        goalPosition = Vector3.zero;
+        goalPositionReached = false;
+        flyUp = false;
+
+        // Enable input.
         input.Enable();
         input.Player.Movement.performed += OnMovement;
         input.Player.Movement.canceled += OnMovementCancel;
@@ -31,7 +41,7 @@ public class PlayerBehaviour : MonoBehaviour
 
     private void OnDisable()
     {
-        // Disable input
+        // Disable input.
         input.Disable();
         input.Player.Movement.performed -= OnMovement;
         input.Player.Movement.canceled -= OnMovementCancel;
@@ -49,10 +59,10 @@ public class PlayerBehaviour : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Movement
+        // Movement.
         Move();
 
-        // Flies the character up
+        // Flies the character up.
         FlyUp();
     }
 
@@ -98,15 +108,19 @@ public class PlayerBehaviour : MonoBehaviour
     {
         if (goalPosition != Vector3.zero && !goalPositionReached)
         {
+            // Move to center position.
             transform.position = Vector3.MoveTowards(transform.position, goalPosition, 0.1f);
 
-            if (Vector3.Distance(transform.position, goalPosition) < 0.01f)
+            // If center has been reached.
+            if (Vector3.Distance(transform.position, goalPosition) < 0.01f) 
             {
                 goalPositionReached = true;
                 flyUp = true;
             }
-        } else if (flyUp)
+        } 
+        else if (flyUp)
         {
+            // Fly player up.
             rb.velocity = new Vector3(movementVector.x, 3f, movementVector.z);
         }      
     }

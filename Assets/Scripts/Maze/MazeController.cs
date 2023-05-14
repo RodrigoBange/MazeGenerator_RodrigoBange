@@ -50,11 +50,11 @@ public class MazeController : MonoBehaviour
         this.width = width;
         this.height = height;
 
-        // Clear maze
+        // Clear maze.
         wilsonMazeGenerator.ClearMaze();
         primMazeGenerator.ClearMaze();
 
-        // Enable map camera
+        // Enable map camera.
         GameManager.Instance.ActivatePlayerCamera(false);
         GameManager.Instance.SetCameraPosition();
 
@@ -71,7 +71,7 @@ public class MazeController : MonoBehaviour
     }
 
     /// <summary>
-    /// Cancels the current maze generation in progress
+    /// Cancels the current maze generation in progress.
     /// </summary>
     public void CancelGeneration()
     {

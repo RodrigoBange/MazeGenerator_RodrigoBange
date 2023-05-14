@@ -41,29 +41,29 @@ public class PrimMazeGenerator : MonoBehaviour, IMazeGenerator
     /// <param name="parent">The parent of the maze to generate the cells in.</param>
     public IEnumerator CreateMaze(int width, int height, Transform parent)
     {
-        // Set default values
+        // Set default values.
         isDone = false;
         this.width = width;
         this.height = height;
         cells = new CellController[width, height];
         frontier = new();
 
-        // Create the cells
+        // Create the cells.
         yield return StartCoroutine(CreateMazeCells());
 
-        // Pick a starting point
+        // Pick a starting point.
         PickRandomStartingPoint();
 
         chunks = SetGenerationDelay(); // Reference to save for incremental usage.
         progressChunks = chunks; // Set start amount.
         float i = 0;
 
-        // While there are still frontiers left open, create paths
+        // While there are still frontiers left open, create paths.
         while (frontier.Count > 0)
         {
             PickRandomFrontierCell();
 
-            // Load a chunk at a time
+            // Load a chunk at a time.
             i++;
             if (i >= progressChunks)
             {
@@ -113,35 +113,35 @@ public class PrimMazeGenerator : MonoBehaviour, IMazeGenerator
     }
 
     /// <summary>
-    /// Pick a random start point within the maze
+    /// Pick a random start point within the maze.
     /// </summary>
     private void PickRandomStartingPoint()
     {
-        // First pick a random start point 
-        // Mark the cell as part of the maze and set frontier neighbors
+        // First pick a random start point .
+        // Mark the cell as part of the maze and set frontier neighbors.
         MarkCell(cells[Random.Range(0, width), Random.Range(0, height)]);
     }
 
     /// <summary>
-    /// Picks a random frontier cell to work a path from
+    /// Picks a random frontier cell to work a path from.
     /// </summary>
     private void PickRandomFrontierCell()
     {
-        // Pick a random frontier cell and remove from frontier list
+        // Pick a random frontier cell and remove from frontier list.
         frontierCell = frontier[Random.Range(0, frontier.Count)];
         frontier.Remove(frontierCell);
 
-        // Get neighbor cells that are part of the maze
+        // Get neighbor cells that are part of the maze.
         frontierCellNeighbors = GetInMazeNeighbors(frontierCell);
 
-        //Select a random neighbor
+        //Select a random neighbor.
         neighborCell = frontierCellNeighbors[Random.Range(0, frontierCellNeighbors.Count)];
 
-        // Open path from neighbor cell to
+        // Open path from neighbor cell to.
         neighborCell.TogglePath(neighborCell.GetSide(frontierCell), true);
         frontierCell.TogglePath(frontierCell.GetSide(neighborCell), true);
 
-        // Mark a new cell
+        // Mark a new cell.
         MarkCell(frontierCell);
     }
 
@@ -156,7 +156,7 @@ public class PrimMazeGenerator : MonoBehaviour, IMazeGenerator
         {
             if (!neighbor.IsVisited)
             {
-                if (!frontier.Contains(neighbor)) // Avoid duplicates
+                if (!frontier.Contains(neighbor)) // Avoid duplicates.
                 {
                     frontier.Add(neighbor);
                 }                
@@ -173,7 +173,7 @@ public class PrimMazeGenerator : MonoBehaviour, IMazeGenerator
     {
         mazeNeighbors = new();
 
-        // Can't be any neighbor, must be a connection. So basically requires an open wall
+        // Can't be any neighbor, must be a connection. So basically requires an open wall.
         foreach (var neighbor in frontierCell.Neighbors)
         {
             if (neighbor.IsVisited)
@@ -241,7 +241,11 @@ public class PrimMazeGenerator : MonoBehaviour, IMazeGenerator
 
         foreach (CellController cell in cells)
         {
-            cellPooler.pool.Release(cell);
+            // If maze generation is cancelled is during creation of cells, avoid null reference.
+            if (cell)
+            {
+                cellPooler.pool.Release(cell);
+            }
         }
 
         startPlatform.SetActive(false);
