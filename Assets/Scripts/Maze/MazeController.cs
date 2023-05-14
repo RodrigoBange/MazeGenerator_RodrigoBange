@@ -42,8 +42,7 @@ public class MazeController : MonoBehaviour
     public void GenerateMaze(int width, int height, MazeAlgo algorithm)
     {
         // Check to avoid creating a maze while the current is in progress.
-        if (!wilsonMazeGenerator.IsDone || 
-            !primMazeGenerator.IsDone)
+        if (!wilsonMazeGenerator.IsDone || !primMazeGenerator.IsDone)
         {
             return;
         }
@@ -51,11 +50,11 @@ public class MazeController : MonoBehaviour
         this.width = width;
         this.height = height;
 
-        // Clear maze
+        // Clear maze.
         wilsonMazeGenerator.ClearMaze();
         primMazeGenerator.ClearMaze();
 
-        // Enable map camera
+        // Enable map camera.
         GameManager.Instance.ActivatePlayerCamera(false);
         GameManager.Instance.SetCameraPosition();
 
@@ -71,21 +70,13 @@ public class MazeController : MonoBehaviour
         StartCoroutine(coroutine);
     }
 
-    public void GeneratePrimMaze(int width, int height)
+    /// <summary>
+    /// Cancels the current maze generation in progress.
+    /// </summary>
+    public void CancelGeneration()
     {
-        // Check to avoid creating a maze while the previous is in progress.
-        if (!primMazeGenerator.IsDone)
-        {
-            return;
-        }
-
-        primMazeGenerator.ClearMaze();
-
-        // Enable map camera
-        GameManager.Instance.ActivatePlayerCamera(false);
-        GameManager.Instance.SetCameraPosition();
-
-        coroutine = primMazeGenerator.CreateMaze(width, height, transform);
-        StartCoroutine(coroutine);
+        StopCoroutine(coroutine);
+        wilsonMazeGenerator.CancelGeneration();
+        primMazeGenerator.CancelGeneration();
     }
 }

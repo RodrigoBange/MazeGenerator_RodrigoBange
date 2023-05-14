@@ -1,10 +1,7 @@
-using System.Collections.Generic;
-using UnityEngine;
-
 public static class Utilities
 {
     /// <summary>
-    /// Returns the opposite side of the given side
+    /// Returns the opposite side of the given side.
     /// </summary>
     public static Side Opposite(this Side side)
     {

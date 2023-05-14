@@ -46,7 +46,7 @@ public class WilsonMazeGenerator : MonoBehaviour, IMazeGenerator
     /// <param name="parent">The parent of the maze to generate the cells in.</param>
     public IEnumerator CreateMaze(int width, int height, Transform parent)
     {
-        // Set default values
+        // Set default values.
         isDone = false;
         this.width = width;
         this.height = height;
@@ -60,7 +60,7 @@ public class WilsonMazeGenerator : MonoBehaviour, IMazeGenerator
         // First we pick a random start and goal cell for the first path.
         PickRandomPath();
 
-        // Set the start cell in the new path
+        // Set the start cell in the new path.
         path = new();
         path.Push(currentCell);
         wrongCells = new();
@@ -115,6 +115,7 @@ public class WilsonMazeGenerator : MonoBehaviour, IMazeGenerator
 
         // Maze has been loaded.
         isDone = true;
+        GameManager.Instance.MazeGenerated();
     }
 
     /// <summary>
@@ -267,7 +268,7 @@ public class WilsonMazeGenerator : MonoBehaviour, IMazeGenerator
     /// </summary>
     private void DeadEndFound()
     {
-        // We are at a dead end. Go back.
+        // Dead end has been encountered, go back.
         CellController badCell = currentCell;
         badCell.SetCellActive(false);
         wrongCells.Add(badCell);
@@ -338,12 +339,26 @@ public class WilsonMazeGenerator : MonoBehaviour, IMazeGenerator
 
         foreach (CellController cell in cells)
         {
-            cellPooler.pool.Release(cell);
+            // If maze generation is cancelled is during creation of cells, avoid null reference.
+            if (cell)
+            {
+                cellPooler.pool.Release(cell);
+            }            
         }
 
         startPlatform.SetActive(false);
         finishPlatform.SetActive(false);
 
         cells = new CellController[0, 0];
+    }
+
+    /// <summary>
+    /// Stops all running coroutines in the script.
+    /// </summary>
+    public void CancelGeneration()
+    {
+        isDone = true;
+        StopAllCoroutines();
+        ClearMaze();
     }
 }
