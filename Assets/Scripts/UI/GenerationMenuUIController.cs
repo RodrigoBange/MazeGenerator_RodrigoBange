@@ -15,7 +15,7 @@ public class GenerationMenuUIController : MonoBehaviour
     private Slider widthSlider, heightSlider;
 
     [SerializeField]
-    private ToggleGroup mazeToggles;
+    private ToggleGroup mazeToggles, mobileToggles;
 
     [SerializeField]
     private TextMeshProUGUI widthText, heightText;
@@ -25,6 +25,11 @@ public class GenerationMenuUIController : MonoBehaviour
 
     [SerializeField]
     private Button generateButton, cancelButton, playButton;
+
+    [SerializeField]
+    private GameObject mobileSettings;
+
+    Toggle algorithmToggle, mobileInputToggle;
 
     public bool generatingMap;
 
@@ -39,6 +44,7 @@ public class GenerationMenuUIController : MonoBehaviour
     private void OnEnable()
     {
         // Set default values.
+        mobileSettings.SetActive(Application.isMobilePlatform);
         generationPanelRect.anchoredPosition = generationPanelPosition;
         generationPanelRect.LeanMoveX(-200f, 0.5f);
     }
@@ -51,13 +57,13 @@ public class GenerationMenuUIController : MonoBehaviour
         int width = (int)widthSlider.value;
         int height = (int)heightSlider.value;
 
-        Toggle activeToggle = mazeToggles.ActiveToggles().FirstOrDefault();
+        algorithmToggle = mazeToggles.ActiveToggles().FirstOrDefault();
 
-        if (activeToggle.gameObject.name == "Wilson")
+        if (algorithmToggle.gameObject.name == "Wilson")
         {
             MazeController.Instance.GenerateMaze(width, height, MazeAlgo.WilsonAlgo);
         }
-        else if (activeToggle.gameObject.name == "Prim")
+        else if (algorithmToggle.gameObject.name == "Prim")
         {
             MazeController.Instance.GenerateMaze(width, height, MazeAlgo.PrimAlgo);
         }
@@ -124,6 +130,22 @@ public class GenerationMenuUIController : MonoBehaviour
     /// </summary>
     public void OnPlayLevelClick()
     {
+        GameManager.Instance.joystickEnabled = false;
+
+        if (Application.isMobilePlatform && mobileToggles.gameObject.activeSelf)
+        {
+            mobileInputToggle = mobileToggles.ActiveToggles().FirstOrDefault();
+
+            if (mobileInputToggle.gameObject.name == "Joystick")
+            {
+                GameManager.Instance.joystickEnabled = true;
+            }
+            else if (mobileInputToggle.gameObject.name == "Dpad")
+            {
+                GameManager.Instance.joystickEnabled = false;
+            }
+        }
+
         GameManager.Instance.SetUpPlayer();
     }
 

@@ -16,6 +16,9 @@ public class GameManager : MonoBehaviour
     private GameObject player;
 
     [SerializeField]
+    private PlayerBehaviour playerBehaviour;
+
+    [SerializeField]
     private GameObject startPlatform;
 
     private Vector3 respawnPoint;
@@ -28,6 +31,8 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     private GenerationMenuUIController generationMenuUIController;
+
+    public bool joystickEnabled;
 
     void Awake()
     {
@@ -63,6 +68,8 @@ public class GameManager : MonoBehaviour
             player.SetActive(false); 
         }
 
+        playerBehaviour.joystickEnabled = joystickEnabled;
+        gameUIController.joystickEnabled = joystickEnabled;
         player.transform.SetPositionAndRotation(respawnPoint, Quaternion.Euler(0, 180, 0));
         respawnPoint = new Vector3(startPlatform.transform.position.x, startPlatform.transform.position.y + 5f, startPlatform.transform.position.z);
         player.transform.position = respawnPoint;

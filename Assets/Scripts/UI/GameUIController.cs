@@ -9,6 +9,11 @@ public class GameUIController : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI timerText, attemptsText;
 
+    [SerializeField]
+    private GameObject joystick, dpad;
+
+    public bool joystickEnabled;
+
     public float timePlayed;
 
     private string TimePlayedText
@@ -31,6 +36,7 @@ public class GameUIController : MonoBehaviour
         Invoke(nameof(ActivateTimer), 0.9f);
         attemptsCount = 0;
         attemptsText.text = attemptsCount.ToString();
+        EnableMobileInput();
     }
 
     private void Update()
@@ -40,6 +46,15 @@ public class GameUIController : MonoBehaviour
             timePlayed += Time.deltaTime;
             timerText.text = TimePlayedText;
         }
+    }
+
+    /// <summary>
+    /// Checks if platform is of mobile and enables the requested input.
+    /// </summary>
+    private void EnableMobileInput()
+    {
+        joystick.SetActive(Application.isMobilePlatform && joystickEnabled);
+        dpad.SetActive(Application.isMobilePlatform && !joystickEnabled);
     }
 
     /// <summary>

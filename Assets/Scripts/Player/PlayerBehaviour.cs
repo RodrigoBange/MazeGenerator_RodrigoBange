@@ -21,6 +21,8 @@ public class PlayerBehaviour : MonoBehaviour
 
     private bool goalPositionReached = false;
 
+    public bool joystickEnabled = true;
+
     private void Awake()
     {
         input = new CustomInput();       
@@ -50,6 +52,11 @@ public class PlayerBehaviour : MonoBehaviour
     private void OnMovement(InputAction.CallbackContext value)
     {
         movementVector = value.ReadValue<Vector3>();
+
+        if (joystickEnabled)
+        {
+            movementVector = Quaternion.Euler(0, 45, 0) * movementVector;
+        }
     }
 
     private void OnMovementCancel(InputAction.CallbackContext value)
