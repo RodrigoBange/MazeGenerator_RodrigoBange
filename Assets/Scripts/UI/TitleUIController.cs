@@ -3,6 +3,7 @@ using UnityEngine.UI;
 
 public class TitleUIController : MonoBehaviour
 {
+
     [SerializeField]
     private CanvasGroup titleCanvas;
 
